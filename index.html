@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>OAuthTest</title>
+	</head>
+	
+	<body>
+		<button onclick="window.location.href='https://www.patreon.com/oauth2/authorize?response_type=code&client_id=czMSWBgwp0aAIelr55LAARJkVwbKuIL3B-1M40yYjg8HVHiRL9k7E0BpLhMhClsx&redirect_uri=https://oauth.hypermeta.workers.dev/'" style="background-color: #F96854; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 5px;">Login with Patreon</button>
+	</body>
+	<script>
+		var _VERSION = 1.0
+		//var OAuthToken = localStorage.getItem("OAuthToken")
+
+		var OAuthToken = (new URLSearchParams(window.location.search)).get('token')
+		if (OAuthToken) {
+			console.log("Token Received: " + OAuthToken)
+			window.location = window.location.href.split('?')[0]
+		}
+	</script>
+</html>
