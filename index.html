@@ -6,9 +6,10 @@
 	</head>
 	
 	<body>
-		<button onclick="window.location.href='https://www.patreon.com/oauth2/authorize?response_type=code&client_id=czMSWBgwp0aAIelr55LAARJkVwbKuIL3B-1M40yYjg8HVHiRL9k7E0BpLhMhClsx&scope=identity&redirect_uri=https://oauth.hypermeta.workers.dev/'" style="background-color: #F96854; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 5px;">Login with Patreon</button>
-	
-
+		<button onclick="StartPatreonOAuth2()" style="background-color: #F96854; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 5px;">Login with Patreon</button>
+		<br>
+		<br>
+		<button onclick="RemoteRequest()">Remote Request</button>
 	</body>
 	
 	<br><br>
@@ -16,15 +17,50 @@
 	<a id="response"></a>
 	
 	<script>
-		var OAuthToken = (new URLSearchParams(window.location.search)).get('token')
-		if (OAuthToken) {
-			console.log("Token Received: " + OAuthToken)
-			//window.location = window.location.href.split('?')[0]
-			document.getElementById("response").innerText = OAuthToken
-		} else {
-			//document.getElementById("response").innerText = "error"
-		}
-		
+		function CheckOAuthToken() {
+			var OAuthToken = (new URLSearchParams(window.location.search)).get('token')
+			if (OAuthToken) {
+				localStorage.setItem("token", OAuthToken);
+				window.location = window.location.href.split('?')[0]
+			}
+		} CheckOAuthToken()
 
+		function Login() {
+			if (localStorage.hasOwnProperty("token")) {
+				document.getElementById("response").innerText = "Login successfull"
+			}
+		} Login()
+
+		function StartPatreonOAuth2() {
+			const oauth2_link = "https://www.patreon.com/oauth2/authorize?response_type=code&client_id=czMSWBgwp0aAIelr55LAARJkVwbKuIL3B-1M40yYjg8HVHiRL9k7E0BpLhMhClsx&scope=identity&redirect_uri=https://oauth.hypermeta.workers.dev/"
+			window.location.href = oauth2_link
+		}
+
+		async function RemoteRequest() {
+			var SearchCommand = "custom:F,1"
+			var token = ""
+			
+			if (localStorage.hasOwnProperty("token")) {
+				token = localStorage.getItem("token")
+			} else {
+				StartPatreonOAuth2()
+				return
+			}
+			
+			const SearchResultRaw = await fetch('https://reports-nathan-act-currency.trycloudflare.com/', {
+				method: 'POST',
+				headers: {'Data':"searchcommand:" + SearchCommand + "token:" + token},
+			})
+			
+			const SearchResult = await SearchResultRaw.json()
+			
+			if (SearchResult?.status == "valid") {
+				document.getElementById("response").innerText = SearchResult.seed
+			} else {
+				localStorage.removeItem("token")
+				StartPatreonOAuth2()
+				return
+			}
+		}
 	</script>
 </html>
