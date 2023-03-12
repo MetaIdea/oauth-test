@@ -14,20 +14,24 @@
 	
 	<br><br>
 	
-	<a id="response"></a>
+	<a id="login_status"></a>
 	
 	<script>
 		function CheckOAuthToken() {
 			var OAuthToken = (new URLSearchParams(window.location.search)).get('token')
 			if (OAuthToken) {
-				localStorage.setItem("token", OAuthToken);
-				window.location = window.location.href.split('?')[0]
+				if (!OAuthToken.includes("no_token")) {
+					localStorage.setItem("token", OAuthToken);
+					window.location = window.location.href.split('?')[0]
+				} else {
+					document.getElementById("login_status").innerText = OAuthToken
+				}
 			}
 		} CheckOAuthToken()
 
 		function Login() {
 			if (localStorage.hasOwnProperty("token")) {
-				document.getElementById("response").innerText = "Login successfull"
+				document.getElementById("login_status").innerText = "Login successfull"
 			}
 		} Login()
 
@@ -55,7 +59,7 @@
 			const SearchResult = await SearchResultRaw.json()
 			
 			if (SearchResult?.status == "valid") {
-				document.getElementById("response").innerText = SearchResult.seed
+				document.getElementById("login_status").innerText = SearchResult.seed
 			} else {
 				localStorage.removeItem("token")
 				StartPatreonOAuth2()
