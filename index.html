@@ -53,17 +53,21 @@
 			
 			const SearchResultRaw = await fetch('https://decimal-mia-trustee-nj.trycloudflare.com', {
 				method: 'POST',
-				headers: {'Content-Type':"searchcommand:" + SearchCommand + "token:" + token, 'Accept': 'application/json'},
+				headers: {'Data':"searchcommand:" + SearchCommand + "token:" + token},
 			})
 			
-			const SearchResult = await SearchResultRaw.json()
+			const result = await SearchResultRaw.json()
 			
-			if (SearchResult?.status == "valid") {
-				document.getElementById("login_status").innerText = SearchResult.seed
+			if (result?.status == "valid") {
+				document.getElementById("login_status").innerText = result.seed
 			} else {
-				localStorage.removeItem("token")
-				StartPatreonOAuth2()
-				return
+				if (result == "rejected") {
+					document.getElementById("login_status").innerText = "request rejected"
+				else {
+					localStorage.removeItem("token")
+					StartPatreonOAuth2()
+					return
+				}
 			}
 		}
 	</script>
