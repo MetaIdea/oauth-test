@@ -58,15 +58,17 @@
 			
 			const result = await SearchResultRaw.json()
 			
-			if (result?.status == "valid") {
-				document.getElementById("login_status").innerText = result.seed
-			} else {
-				if (result == "rejected") {
-					document.getElementById("login_status").innerText = "request rejected"
-				else {
-					localStorage.removeItem("token")
-					StartPatreonOAuth2()
-					return
+			if (typeof result !== 'undefined') {
+				if (result?.status == "valid") {
+					document.getElementById("login_status").innerText = result.seed
+				} else {
+					if (result == "rejected") {
+						document.getElementById("login_status").innerText = "request rejected"
+					} else {
+						localStorage.removeItem("token")
+						StartPatreonOAuth2()
+						return
+					}
 				}
 			}
 		}
