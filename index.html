@@ -62,7 +62,7 @@
 				if (result?.status == "valid") {
 					document.getElementById("login_status").innerText = result.seed
 				} else {
-					if (result == "rejected") {
+					if (result?.status == "rejected") {
 						document.getElementById("login_status").innerText = "request rejected"
 					} else {
 						localStorage.removeItem("token")
