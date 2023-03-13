@@ -54,7 +54,6 @@
 			const SearchResultRaw = await fetch('https://decimal-mia-trustee-nj.trycloudflare.com', {
 				method: 'POST',
 				headers: {'Content-Type':"searchcommand:" + SearchCommand + "token:" + token, 'Accept': 'application/json'},
-				'
 			})
 			
 			const SearchResult = await SearchResultRaw.json()
